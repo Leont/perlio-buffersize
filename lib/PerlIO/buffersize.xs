@@ -13,8 +13,10 @@ static IV PerlIOBufferSize_pushed(pTHX_ PerlIO *f, const char *mode, SV *arg, Pe
 	else {
 		size_t size = SvIV(arg);
 		if (buffer->buf) {
-			if (size < buffer->bufsiz)
-				Perl_croak(aTHX_ "Can't shrink buffer once in use");
+			if (size < buffer->bufsiz) {
+				Perl_warn(aTHX_ "Can't shrink buffer once in use");
+				return -1;
+			}
 			Renew(buffer->buf, size, char);
 		}
 		buffer->bufsiz = size;
